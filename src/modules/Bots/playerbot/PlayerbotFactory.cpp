@@ -10,6 +10,8 @@
 #include "ahbot/AhBot.h"
 #include "RandomPlayerbotFactory.h"
 #include "AiFactory.h"
+#include "ArenaTeam.h"
+
 
 
 using namespace ai;
@@ -1665,3 +1667,55 @@ void PlayerbotFactory::InitGuild()
     if (guild->GetMemberSize() < 10)
         guild->AddMember(bot->GetObjectGuid(), urand(GR_OFFICER, GR_INITIATE));
 }
+void PlayerbotFactory::InitArena()
+
+{
+	uint32(GetMembersSize());
+
+	uint8 slot = ArenaTeam::GetSlotByType(ARENA_TYPE_1v1);
+	if (slot >= MAX_ARENA_SLOT)
+		return;
+
+	// Check if player is already in an arena team
+	if (bot->GetArenaTeamId(slot))
+	{
+		bot->GetSession()->SendArenaTeamCommandResult(ERR_ARENA_TEAM_CREATE_S, bot->GetName(), "", ERR_ALREADY_IN_ARENA_TEAM);
+		return;
+	}
+
+
+	// Teamname = playername
+	// if teamname exist, we have to choose another name (playername  number)
+	int i = 1;
+	std::stringstream teamName;
+	teamName << bot->GetName();
+	do
+	{
+		if (sObjectMgr.GetArenaTeamByName(teamName.str()) != NULL) // teamname exist, so choose another name
+		{
+			teamName.str(std::string());
+			teamName << bot->GetName() << i;
+		}
+		else
+			break;
+	} while (i < 100); // should never happen
+
+					   // Create arena team
+	ArenaTeam* arenaTeam = new ArenaTeam();
+
+	if (!arenaTeam->Create(bot->GetGUID(), ARENA_TYPE_1v1, teamName.str()))
+	{
+		delete arenaTeam;
+		return;
+	}
+
+	// Register arena team
+	sObjectMgr.AddArenaTeam(arenaTeam);
+	arenaTeam->AddMember(bot->GetGUID());
+
+
+	ChatHandler(bot->GetSession()).SendSysMessage("1v1 Arenateam successful created!");
+
+	return;
+}
+	

@@ -215,8 +215,9 @@ enum BattleGroundQueueTypeId
     BATTLEGROUND_QUEUE_2v2      = 5,
     BATTLEGROUND_QUEUE_3v3      = 6,
     BATTLEGROUND_QUEUE_5v5      = 7,
+	BATTLEGROUND_QUEUE_1v1      = 8,
 };
-#define MAX_BATTLEGROUND_QUEUE_TYPES 8
+#define MAX_BATTLEGROUND_QUEUE_TYPES 9
 
 /**
  * @brief

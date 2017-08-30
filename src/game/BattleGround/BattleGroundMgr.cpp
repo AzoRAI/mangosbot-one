@@ -823,9 +823,9 @@ void BattleGroundQueue::Update(BattleGroundTypeId bgTypeId, BattleGroundBracketI
         else
         {
             // this switch can be much shorter
-            MaxPlayersPerTeam = arenaType;
-            MinPlayersPerTeam = arenaType;
-            /*switch(arenaType)
+            //MaxPlayersPerTeam = arenaType;
+           // MinPlayersPerTeam = arenaType;
+            switch(arenaType)
             {
             case ARENA_TYPE_2v2:
                 MaxPlayersPerTeam = 2;
@@ -839,7 +839,10 @@ void BattleGroundQueue::Update(BattleGroundTypeId bgTypeId, BattleGroundBracketI
                 MaxPlayersPerTeam = 5;
                 MinPlayersPerTeam = 5;
                 break;
-            }*/
+			case ARENA_TYPE_1v1:
+				MaxPlayersPerTeam = 1;		
+				break;
+            }
         }
     }
 
@@ -1185,7 +1188,8 @@ void BattleGroundMgr::Update(uint32 diff)
             DEBUG_LOG("BattleGroundMgr: UPDATING ARENA QUEUES");
             m_BattleGroundQueues[BATTLEGROUND_QUEUE_2v2].Update(BATTLEGROUND_AA, BG_BRACKET_ID_LAST, ARENA_TYPE_2v2, true, 0);
             m_BattleGroundQueues[BATTLEGROUND_QUEUE_3v3].Update(BATTLEGROUND_AA, BG_BRACKET_ID_LAST, ARENA_TYPE_3v3, true, 0);
-            m_BattleGroundQueues[BATTLEGROUND_QUEUE_5v5].Update(BATTLEGROUND_AA, BG_BRACKET_ID_LAST, ARENA_TYPE_5v5, true, 0);
+			m_BattleGroundQueues[BATTLEGROUND_QUEUE_5v5].Update(BATTLEGROUND_AA, BG_BRACKET_ID_LAST, ARENA_TYPE_5v5, true, 0);
+            m_BattleGroundQueues[BATTLEGROUND_QUEUE_1v1].Update(BATTLEGROUND_AA, BG_BRACKET_ID_LAST, ARENA_TYPE_1v1, true, 0);
 
             m_NextRatingDiscardUpdate = sWorld.getConfig(CONFIG_UINT32_ARENA_RATING_DISCARD_TIMER);
         }
@@ -1849,6 +1853,8 @@ BattleGroundQueueTypeId BattleGroundMgr::BGQueueTypeId(BattleGroundTypeId bgType
         case BATTLEGROUND_BE:
             switch (arenaType)
             {
+				case ARENA_TYPE_1v1:  
+					return BATTLEGROUND_QUEUE_1v1;
                 case ARENA_TYPE_2v2:
                     return BATTLEGROUND_QUEUE_2v2;
                 case ARENA_TYPE_3v3:
@@ -1875,6 +1881,7 @@ BattleGroundTypeId BattleGroundMgr::BGTemplateId(BattleGroundQueueTypeId bgQueue
             return BATTLEGROUND_AV;
         case BATTLEGROUND_QUEUE_EY:
             return BATTLEGROUND_EY;
+		case BATTLEGROUND_QUEUE_1v1:
         case BATTLEGROUND_QUEUE_2v2:
         case BATTLEGROUND_QUEUE_3v3:
         case BATTLEGROUND_QUEUE_5v5:
@@ -1888,6 +1895,8 @@ ArenaType BattleGroundMgr::BGArenaType(BattleGroundQueueTypeId bgQueueTypeId)
 {
     switch (bgQueueTypeId)
     {
+		case BATTLEGROUND_QUEUE_1v1:
+		return ARENA_TYPE_1v1;
         case BATTLEGROUND_QUEUE_2v2:
             return ARENA_TYPE_2v2;
         case BATTLEGROUND_QUEUE_3v3:
