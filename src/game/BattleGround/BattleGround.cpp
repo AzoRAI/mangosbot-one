@@ -31,6 +31,7 @@
 #include "Language.h"
 #include "SpellAuras.h"
 #include "ArenaTeam.h"
+#include "World.h"
 #include "Group.h"
 #include "ObjectGuid.h"
 #include "ObjectMgr.h"
@@ -233,6 +234,8 @@ BattleGround::BattleGround()
 
     m_MapId             = 0;
     m_Map               = NULL;
+
+    m_validStartPositionTimer              = 0;
 
     m_TeamStartLocX[TEAM_INDEX_ALLIANCE]   = 0;
     m_TeamStartLocX[TEAM_INDEX_HORDE]      = 0;
@@ -2023,4 +2026,23 @@ void BattleGround::SetBgRaid(Team team, Group* bg_raid)
 WorldSafeLocsEntry const* BattleGround::GetClosestGraveYard(Player* player)
 {
     return sObjectMgr.GetClosestGraveYard(player->GetPositionX(), player->GetPositionY(), player->GetPositionZ(), player->GetMapId(), player->GetTeam());
+}
+
+/// <summary>
+/// Gets the winner in case of premature finish of the BG.
+/// Different BG's may have different criteria for choosing the winner besides simple player accounting
+/// </summary>
+/// <returns>The winner team</returns>
+Team BattleGround::GetPrematureWinner()
+{
+    uint32 hPlayers = GetPlayersCountByTeam(HORDE);
+    uint32 aPlayers = GetPlayersCountByTeam(ALLIANCE);
+    
+    if (aPlayers > hPlayers)
+      { return ALLIANCE; }
+
+    if (hPlayers > aPlayers)
+      { return HORDE; }
+
+    return TEAM_NONE;
 }
