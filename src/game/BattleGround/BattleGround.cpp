@@ -2027,22 +2027,3 @@ WorldSafeLocsEntry const* BattleGround::GetClosestGraveYard(Player* player)
 {
     return sObjectMgr.GetClosestGraveYard(player->GetPositionX(), player->GetPositionY(), player->GetPositionZ(), player->GetMapId(), player->GetTeam());
 }
-
-/// <summary>
-/// Gets the winner in case of premature finish of the BG.
-/// Different BG's may have different criteria for choosing the winner besides simple player accounting
-/// </summary>
-/// <returns>The winner team</returns>
-Team BattleGround::GetPrematureWinner()
-{
-    uint32 hPlayers = GetPlayersCountByTeam(HORDE);
-    uint32 aPlayers = GetPlayersCountByTeam(ALLIANCE);
-    
-    if (aPlayers > hPlayers)
-      { return ALLIANCE; }
-
-    if (hPlayers > aPlayers)
-      { return HORDE; }
-
-    return TEAM_NONE;
-}

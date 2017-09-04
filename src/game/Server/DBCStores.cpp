@@ -81,6 +81,12 @@ DBCStorage <DurabilityCostsEntry> sDurabilityCostsStore(DurabilityCostsfmt);
 
 DBCStorage <EmotesEntry> sEmotesStore(EmotesEntryfmt);
 DBCStorage <EmotesTextEntry> sEmotesTextStore(EmotesTextEntryfmt);
+typedef std::tuple<uint32, uint32, uint32> EmotesTextSoundKey;
+static std::map<EmotesTextSoundKey, EmotesTextSoundEntry const*> sEmotesTextSoundMap;
+DBCStorage <EmotesTextSoundEntry> sEmotesTextSoundStore(EmotesTextSoundEntryfmt);
+
+DBCStorage <CharSectionsEntry> sCharSectionsStore(CharSectionsEntryfmt);
+CharSectionsMap sCharSectionMap;
 
 typedef std::map<uint32, SimpleFactionsList> FactionTeamMap;
 static FactionTeamMap sFactionTeamMap;
@@ -259,35 +265,42 @@ void LoadDBCStores(const std::string& dataPath)
         }
     }
 
-    LoadDBC(availableDbcLocales, bar, bad_dbc_files, sAreaTriggerStore,         dbcPath, "AreaTrigger.dbc");
-    LoadDBC(availableDbcLocales, bar, bad_dbc_files, sAuctionHouseStore,        dbcPath, "AuctionHouse.dbc");
-    LoadDBC(availableDbcLocales, bar, bad_dbc_files, sBankBagSlotPricesStore,   dbcPath, "BankBagSlotPrices.dbc");
-    LoadDBC(availableDbcLocales, bar, bad_dbc_files, sBattlemasterListStore,    dbcPath, "BattlemasterList.dbc");
-    LoadDBC(availableDbcLocales, bar, bad_dbc_files, sCharStartOutfitStore,     dbcPath, "CharStartOutfit.dbc");
-    LoadDBC(availableDbcLocales, bar, bad_dbc_files, sCharTitlesStore,          dbcPath, "CharTitles.dbc");
-    LoadDBC(availableDbcLocales, bar, bad_dbc_files, sChatChannelsStore,        dbcPath, "ChatChannels.dbc");
-    LoadDBC(availableDbcLocales, bar, bad_dbc_files, sChrClassesStore,          dbcPath, "ChrClasses.dbc");
-    LoadDBC(availableDbcLocales, bar, bad_dbc_files, sChrRacesStore,            dbcPath, "ChrRaces.dbc");
-    LoadDBC(availableDbcLocales, bar, bad_dbc_files, sCinematicSequencesStore,  dbcPath, "CinematicSequences.dbc");
-    LoadDBC(availableDbcLocales, bar, bad_dbc_files, sCreatureDisplayInfoStore, dbcPath, "CreatureDisplayInfo.dbc");
-    LoadDBC(availableDbcLocales, bar, bad_dbc_files, sCreatureDisplayInfoExtraStore, dbcPath, "CreatureDisplayInfoExtra.dbc");
-    LoadDBC(availableDbcLocales, bar, bad_dbc_files, sCreatureFamilyStore,      dbcPath, "CreatureFamily.dbc");
-    LoadDBC(availableDbcLocales, bar, bad_dbc_files, sCreatureSpellDataStore,   dbcPath, "CreatureSpellData.dbc");
-    LoadDBC(availableDbcLocales, bar, bad_dbc_files, sCreatureTypeStore,        dbcPath, "CreatureType.dbc");
-    LoadDBC(availableDbcLocales, bar, bad_dbc_files, sDurabilityCostsStore,     dbcPath, "DurabilityCosts.dbc");
-    LoadDBC(availableDbcLocales, bar, bad_dbc_files, sDurabilityQualityStore,   dbcPath, "DurabilityQuality.dbc");
-    LoadDBC(availableDbcLocales, bar, bad_dbc_files, sEmotesStore,              dbcPath, "Emotes.dbc");
-    LoadDBC(availableDbcLocales, bar, bad_dbc_files, sEmotesTextStore,          dbcPath, "EmotesText.dbc");
-    LoadDBC(availableDbcLocales, bar, bad_dbc_files, sFactionStore,             dbcPath, "Faction.dbc");
-    for (uint32 i = 0; i < sFactionStore.GetNumRows(); ++i)
-    {
-        FactionEntry const* faction = sFactionStore.LookupEntry(i);
-        if (faction && faction->team)
-        {
-            SimpleFactionsList& flist = sFactionTeamMap[faction->team];
-            flist.push_back(i);
-        }
-    }
+	LoadDBC(availableDbcLocales, bar, bad_dbc_files, sAreaTriggerStore, dbcPath, "AreaTrigger.dbc");
+	LoadDBC(availableDbcLocales, bar, bad_dbc_files, sAuctionHouseStore, dbcPath, "AuctionHouse.dbc");
+	LoadDBC(availableDbcLocales, bar, bad_dbc_files, sBankBagSlotPricesStore, dbcPath, "BankBagSlotPrices.dbc");
+	LoadDBC(availableDbcLocales, bar, bad_dbc_files, sCharStartOutfitStore, dbcPath, "CharStartOutfit.dbc");
+	LoadDBC(availableDbcLocales, bar, bad_dbc_files, sChatChannelsStore, dbcPath, "ChatChannels.dbc");
+	LoadDBC(availableDbcLocales, bar, bad_dbc_files, sChrClassesStore, dbcPath, "ChrClasses.dbc");
+	LoadDBC(availableDbcLocales, bar, bad_dbc_files, sChrRacesStore, dbcPath, "ChrRaces.dbc");
+	LoadDBC(availableDbcLocales, bar, bad_dbc_files, sCinematicSequencesStore, dbcPath, "CinematicSequences.dbc");
+	LoadDBC(availableDbcLocales, bar, bad_dbc_files, sCreatureDisplayInfoStore, dbcPath, "CreatureDisplayInfo.dbc");
+	LoadDBC(availableDbcLocales, bar, bad_dbc_files, sCreatureDisplayInfoExtraStore, dbcPath, "CreatureDisplayInfoExtra.dbc");
+	LoadDBC(availableDbcLocales, bar, bad_dbc_files, sCreatureFamilyStore, dbcPath, "CreatureFamily.dbc");
+	LoadDBC(availableDbcLocales, bar, bad_dbc_files, sCreatureSpellDataStore, dbcPath, "CreatureSpellData.dbc");
+	LoadDBC(availableDbcLocales, bar, bad_dbc_files, sCreatureTypeStore, dbcPath, "CreatureType.dbc");
+	LoadDBC(availableDbcLocales, bar, bad_dbc_files, sDurabilityCostsStore, dbcPath, "DurabilityCosts.dbc");
+	LoadDBC(availableDbcLocales, bar, bad_dbc_files, sDurabilityQualityStore, dbcPath, "DurabilityQuality.dbc");
+	LoadDBC(availableDbcLocales, bar, bad_dbc_files, sEmotesStore, dbcPath, "Emotes.dbc");
+	LoadDBC(availableDbcLocales, bar, bad_dbc_files, sEmotesTextStore, dbcPath, "EmotesText.dbc");
+	LoadDBC(availableDbcLocales, bar, bad_dbc_files, sEmotesTextSoundStore, dbcPath, "EmotesTextSound.dbc");
+	for (uint32 i = 0; i < sEmotesTextSoundStore.GetNumRows(); ++i)
+		if (EmotesTextSoundEntry const* entry = sEmotesTextSoundStore.LookupEntry(i))
+			sEmotesTextSoundMap[EmotesTextSoundKey(entry->EmotesTextId, entry->RaceId, entry->SexId)] = entry;
+	LoadDBC(availableDbcLocales, bar, bad_dbc_files, sCharSectionsStore, dbcPath, "CharSections.dbc");
+	for (uint32 i = 0; i < sCharSectionsStore.GetNumRows(); ++i)
+		if (CharSectionsEntry const* entry = sCharSectionsStore.LookupEntry(i))
+			if (entry->Race && ((1 << (entry->Race - 1)) & RACEMASK_ALL_PLAYABLE) != 0) //ignore Nonplayable races
+				sCharSectionMap.insert({ entry->GenType | (entry->Gender << 8) | (entry->Race << 16), entry });
+	LoadDBC(availableDbcLocales, bar, bad_dbc_files, sFactionStore, dbcPath, "Faction.dbc");
+	for (uint32 i = 0; i < sFactionStore.GetNumRows(); ++i)
+	{
+		FactionEntry const* faction = sFactionStore.LookupEntry(i);
+		if (faction && faction->team)
+		{
+			SimpleFactionsList& flist = sFactionTeamMap[faction->team];
+			flist.push_back(i);
+		}
+	}
 
     LoadDBC(availableDbcLocales, bar, bad_dbc_files, sFactionTemplateStore,     dbcPath, "FactionTemplate.dbc");
     LoadDBC(availableDbcLocales, bar, bad_dbc_files, sGameObjectDisplayInfoStore, dbcPath, "GameObjectDisplayInfo.dbc");
@@ -300,7 +313,7 @@ void LoadDBCStores(const std::string& dataPath)
 
     LoadDBC(availableDbcLocales, bar, bad_dbc_files, sGtChanceToSpellCritBaseStore, dbcPath, "gtChanceToSpellCritBase.dbc");
     LoadDBC(availableDbcLocales, bar, bad_dbc_files, sGtChanceToSpellCritStore, dbcPath, "gtChanceToSpellCrit.dbc");
-
+	LoadDBC(availableDbcLocales, bar, bad_dbc_files, sChatChannelsStore, dbcPath, "ChatChannels.dbc");
     LoadDBC(availableDbcLocales, bar, bad_dbc_files, sGtOCTRegenHPStore,        dbcPath, "gtOCTRegenHP.dbc");
     LoadDBC(availableDbcLocales, bar, bad_dbc_files, sGtRegenHPPerSptStore,     dbcPath, "gtRegenHPPerSpt.dbc");
     LoadDBC(availableDbcLocales, bar, bad_dbc_files, sGtRegenMPPerSptStore,     dbcPath, "gtRegenMPPerSpt.dbc");
@@ -857,6 +870,24 @@ uint32 GetCreatureModelRace(uint32 model_id)
         { return 0; }
     CreatureDisplayInfoExtraEntry const* extraEntry = sCreatureDisplayInfoExtraStore.LookupEntry(displayEntry->ExtendedDisplayInfoID);
     return extraEntry ? extraEntry->Race : 0;
+}
+
+EmotesTextSoundEntry const* FindTextSoundEmoteFor(uint32 emote, uint32 race, uint32 gender)
+{
+	auto itr = sEmotesTextSoundMap.find(EmotesTextSoundKey(emote, race, gender));
+	return itr != sEmotesTextSoundMap.end() ? itr->second : nullptr;
+}
+
+CharSectionsEntry const* GetCharSectionEntry(uint8 race, CharSectionType genType, uint8 gender, uint8 type, uint8 color)
+{
+	std::pair<CharSectionsMap::const_iterator, CharSectionsMap::const_iterator> eqr = sCharSectionMap.equal_range(uint32(genType) | uint32(gender << 8) | uint32(race << 16));
+	for (CharSectionsMap::const_iterator itr = eqr.first; itr != eqr.second; ++itr)
+	{
+		if (itr->second->Type == type && itr->second->Color == color)
+			return itr->second;
+	}
+
+	return NULL;
 }
 
 // script support functions

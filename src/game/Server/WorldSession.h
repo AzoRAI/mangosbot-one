@@ -839,6 +839,7 @@ class WorldSession
 
         // Warden
         Warden* _warden;                                    // Remains NULL if Warden system is not enabled by config
+		uint16 _build;                                      // connected client build
 
         time_t _logoutTime;
         bool m_inQueue;                                     // session wait in auth.queue

@@ -124,7 +124,7 @@ void PlayerbotHolder::HandlePlayerBotLoginCallback(QueryResult * dummy, SqlQuery
 
     WorldSession* masterSession = masterAccount ? sWorld.FindSession(masterAccount) : NULL;
     uint32 botAccountId = lqh->GetAccountId();
-    WorldSession *botSession = new WorldSession(botAccountId, NULL, SEC_PLAYER, 0, LOCALE_enUS);
+    WorldSession *botSession = new WorldSession(botAccountId, NULL, SEC_PLAYER, 1, 0, LOCALE_enUS);
 
     botSession->HandlePlayerLogin(lqh); // will delete lqh
 

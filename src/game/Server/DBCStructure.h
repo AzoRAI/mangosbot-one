@@ -244,6 +244,32 @@ struct ChrRacesEntry
     uint32      expansion;                                  // 68       m_required_expansion
 };
 
+enum CharSectionFlags
+{
+	SECTION_FLAG_PLAYER = 0x01
+};
+
+enum CharSectionType
+{
+	SECTION_TYPE_SKIN = 0,
+	SECTION_TYPE_FACE = 1,
+	SECTION_TYPE_FACIAL_HAIR = 2,
+	SECTION_TYPE_HAIR = 3,
+	SECTION_TYPE_UNDERWEAR = 4
+};
+
+struct CharSectionsEntry
+{
+	//uint32 Id;
+	uint32 Race;
+	uint32 Gender;
+	uint32 GenType;
+	//char* TexturePath[3];
+	uint32 Type;
+	uint32 Color;
+	uint32 Flags;
+};
+
 /*struct CinematicCameraEntry
 {
     uint32      id;                                         // 0        m_ID
@@ -392,6 +418,19 @@ struct EmotesTextEntry
     //          m_name
     uint32  textid;                                         //          m_emoteID - ID of the text.
     //          m_emoteText
+};
+
+/**
+* \struct EmotesTextSoundEntry
+* \brief Entry repsenting the text sound for given emote.
+*/
+struct EmotesTextSoundEntry
+{
+	uint32 Id;                                              // 0
+	uint32 EmotesTextId;                                    // 1
+	uint32 RaceId;                                          // 2
+	uint32 SexId;                                           // 3, 0 male / 1 female
+	uint32 SoundId;                                         // 4
 };
 
 /**
