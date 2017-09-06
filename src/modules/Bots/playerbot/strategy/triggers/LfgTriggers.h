@@ -1,8 +1,7 @@
 #pragma once
+/*#include "../Trigger.h"
 
-#include "../Trigger.h"
-
-namespace ai
+ namespace ai;
 {
 class LfgProposalActiveTrigger : public Trigger
 {
@@ -14,4 +13,4 @@ public:
         return AI_VALUE(uint32, "lfg proposal");
     }
 };
-}
+}*/
