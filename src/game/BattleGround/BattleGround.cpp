@@ -31,7 +31,6 @@
 #include "Language.h"
 #include "SpellAuras.h"
 #include "ArenaTeam.h"
-#include "World.h"
 #include "Group.h"
 #include "ObjectGuid.h"
 #include "ObjectMgr.h"
@@ -234,8 +233,6 @@ BattleGround::BattleGround()
 
     m_MapId             = 0;
     m_Map               = NULL;
-
-    m_validStartPositionTimer              = 0;
 
     m_TeamStartLocX[TEAM_INDEX_ALLIANCE]   = 0;
     m_TeamStartLocX[TEAM_INDEX_HORDE]      = 0;
