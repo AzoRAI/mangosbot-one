@@ -1998,81 +1998,67 @@ void Player::RegenerateAll()
 
 void Player::Regenerate(Powers power)
 {
-	uint32 curValue = GetPower(power);
-	uint32 maxValue = GetMaxPower(power);
+    uint32 curValue = GetPower(power);
+    uint32 maxValue = GetMaxPower(power);
 
-	float addvalue = 0.0f;
+    float addvalue = 0.0f;
 
-	switch (power)
-	{
-	case POWER_MANA:
-	{
-		bool recentCast = IsUnderLastManaUseEffect();
-		float ManaIncreaseRate = sWorld.getConfig(CONFIG_FLOAT_RATE_POWER_MANA);
-		if (recentCast)
-		{
-			// Mangos Updates Mana in intervals of 2s, which is correct
+    switch (power)
+    {
+        case POWER_MANA:
+        {
+            bool recentCast = IsUnderLastManaUseEffect();
+            float ManaIncreaseRate = sWorld.getConfig(CONFIG_FLOAT_RATE_POWER_MANA);
+            if (recentCast)
+            {
+                // Mangos Updates Mana in intervals of 2s, which is correct
 			addvalue = m_modManaRegenInterrupt *  ManaIncreaseRate * 2.00f;
-		}
-		else
-		{
+            }
+            else
+            {
 			addvalue = m_modManaRegen * ManaIncreaseRate * 2.00f;
-		}
-	}   break;
-	case POWER_RAGE:                                    // Regenerate rage
-	{
+            }
+        }   break;
+        case POWER_RAGE:                                    // Regenerate rage
+        {
 		addvalue = (m_rageDecayRate * m_rageDecayMultiplier);
-	}   break;
-	case POWER_ENERGY:                                  // Regenerate energy (rogue)
-	{
-		float EnergyRate = sWorld.getConfig(CONFIG_FLOAT_RATE_POWER_ENERGY);
-		addvalue = 20 * EnergyRate;
-		break;
-	}
-	case POWER_FOCUS:
-	case POWER_HAPPINESS:
-	case POWER_HEALTH:
-	default:
-		break;
-	}
+        }   break;
+        case POWER_ENERGY:                                  // Regenerate energy (rogue)
+        {
+            float EnergyRate = sWorld.getConfig(CONFIG_FLOAT_RATE_POWER_ENERGY);
+            addvalue = 20 * EnergyRate;
+            break;
+        }
+        case POWER_FOCUS:
+        case POWER_HAPPINESS:
+        case POWER_HEALTH:
+            break;
+    }
 
-	// Mana regen calculated in Player::UpdateManaRegen()
-	// Exist only for POWER_MANA, POWER_ENERGY, POWER_FOCUS auras
-	if (power != POWER_MANA)
-	{
-		AuraList const& ModPowerRegenPCTAuras = GetAurasByType(SPELL_AURA_MOD_POWER_REGEN_PERCENT);
-		for (AuraList::const_iterator i = ModPowerRegenPCTAuras.begin(); i != ModPowerRegenPCTAuras.end(); ++i)
-			if ((*i)->GetModifier()->m_miscvalue == int32(power))
-			{
-				addvalue *= ((*i)->GetModifier()->m_amount + 100) / 100.0f;
-			}
-	}
+    // Mana regen calculated in Player::UpdateManaRegen()
+    // Exist only for POWER_MANA, POWER_ENERGY, POWER_FOCUS auras
+    if (power != POWER_MANA)
+    {
+        AuraList const& ModPowerRegenPCTAuras = GetAurasByType(SPELL_AURA_MOD_POWER_REGEN_PERCENT);
+        for (AuraList::const_iterator i = ModPowerRegenPCTAuras.begin(); i != ModPowerRegenPCTAuras.end(); ++i)
+            if ((*i)->GetModifier()->m_miscvalue == int32(power))
+                { addvalue *= ((*i)->GetModifier()->m_amount + 100) / 100.0f; }
+    }
 
-	if (power != POWER_RAGE)
-	{
-		curValue += uint32(addvalue);
-		if (curValue > maxValue)
-		{
-			curValue = maxValue;
-		}
-	}
-	else if (!IsInCombat())
-	{
-		if (curValue <= uint32(addvalue))
-		{
-			curValue = 0;
-		}
-		else
-		{
-			curValue -= uint32(addvalue);
-		}
-	}
-	else
-	{
-		return;
-	}
-
-	SetPower(power, curValue);
+    if (power != POWER_RAGE)
+    {
+        curValue += uint32(addvalue);
+        if (curValue > maxValue)
+            { curValue = maxValue; }
+    }
+    else
+    {
+        if (curValue <= uint32(addvalue))
+            { curValue = 0; }
+        else
+            { curValue -= uint32(addvalue); }
+    }
+    SetPower(power, curValue);
 }
 
 void Player::RegenerateHealth()
@@ -2624,7 +2610,7 @@ void Player::InitStatsForLevel(bool reapplyMods)
     SetFloatValue(PLAYER_RANGED_CRIT_PERCENTAGE, 0.0f);
 
     // Init spell schools (will be recalculated in UpdateAllStats() at loading and in _ApplyAllStatBonuses() at reset
-	for (uint8 i = 0; i < MAX_SPELL_SCHOOL; ++i)
+    for (uint8 i = 0; i < MAX_SPELL_SCHOOL; ++i)
 	{
 		m_SpellCritPercentage[i] = 0.0f;
 	}

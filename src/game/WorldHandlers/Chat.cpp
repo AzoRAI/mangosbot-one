@@ -818,7 +818,6 @@ ChatCommand* ChatHandler::getCommandTable()
         { "waterwalk",      SEC_GAMEMASTER,     false, &ChatHandler::HandleWaterwalkCommand,           "", NULL },
         { "quit",           SEC_CONSOLE,        true,  &ChatHandler::HandleQuitCommand,                "", NULL },
         { "mmap",           SEC_GAMEMASTER,     false, NULL,                                           "", mmapCommandTable },
-        { "spell_linked",   SEC_ADMINISTRATOR,  true,  &ChatHandler::HandleReloadSpellLinkedCommand,   "", NULL },
 #ifdef ENABLE_PLAYERBOTS
         { "ahbot",            SEC_GAMEMASTER,    true,  &ChatHandler::HandleAhBotCommand,                      "" },
         { "rndbot",           SEC_GAMEMASTER,    true,  &ChatHandler::HandleRandomPlayerbotCommand,     "" },

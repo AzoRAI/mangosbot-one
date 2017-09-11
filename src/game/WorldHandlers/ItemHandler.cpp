@@ -32,7 +32,6 @@
 #include "Item.h"
 #include "UpdateData.h"
 #include "Chat.h"
-#include "World.h"
 
 void WorldSession::HandleSplitItemOpcode(WorldPacket& recv_data)
 {
