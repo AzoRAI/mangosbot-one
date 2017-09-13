@@ -422,7 +422,7 @@ Player::Player(WorldSession* session): Unit(), m_mover(this), m_camera(this), m_
 
     m_usedTalentCount = 0;
 
-    m_modManaRegen = 0;
+  /*  m_modManaRegen = 0;
     m_modManaRegenInterrupt = 0;
 
     m_rageDecayRate = 1.25f;
@@ -430,7 +430,7 @@ Player::Player(WorldSession* session): Unit(), m_mover(this), m_camera(this), m_
 
     for (int s = 0; s < MAX_SPELL_SCHOOL; s++)
         { m_SpellCritPercentage[s] = 0.0f; }
-
+*/
     m_regenTimer = 0;
     m_weaponChangeTimer = 0;
 
@@ -2012,16 +2012,17 @@ void Player::Regenerate(Powers power)
             if (recentCast)
             {
                 // Mangos Updates Mana in intervals of 2s, which is correct
-			addvalue = m_modManaRegenInterrupt *  ManaIncreaseRate * 2.00f;
+			addvalue = GetFloatValue(PLAYER_FIELD_MOD_MANA_REGEN_INTERRUPT) *  ManaIncreaseRate * 2.00f;
             }
             else
             {
-			addvalue = m_modManaRegen * ManaIncreaseRate * 2.00f;
+			addvalue = GetFloatValue(PLAYER_FIELD_MOD_MANA_REGEN) * ManaIncreaseRate * 2.00f;
             }
         }   break;
         case POWER_RAGE:                                    // Regenerate rage
         {
-		addvalue = (m_rageDecayRate * m_rageDecayMultiplier);
+			float RageDecreaseRate = sWorld.getConfig(CONFIG_FLOAT_RATE_POWER_RAGE_LOSS);
+			addvalue = 20 * RageDecreaseRate;               // 2 rage by tick (= 2 seconds => 1 rage/sec)
         }   break;
         case POWER_ENERGY:                                  // Regenerate energy (rogue)
         {
@@ -2045,20 +2046,20 @@ void Player::Regenerate(Powers power)
                 { addvalue *= ((*i)->GetModifier()->m_amount + 100) / 100.0f; }
     }
 
-    if (power != POWER_RAGE)
-    {
-        curValue += uint32(addvalue);
-        if (curValue > maxValue)
-            { curValue = maxValue; }
-    }
-    else
-    {
-        if (curValue <= uint32(addvalue))
-            { curValue = 0; }
-        else
-            { curValue -= uint32(addvalue); }
-    }
-    SetPower(power, curValue);
+	if (power != POWER_RAGE)
+		 {
+		curValue += uint32(addvalue);
+		if (curValue > maxValue)
+			 { curValue = maxValue; }
+		}
+	else
+		 {
+		if (curValue <= uint32(addvalue))
+			 { curValue = 0; }
+		else
+			 { curValue -= uint32(addvalue); }
+		}
+	SetPower(power, curValue);
 }
 
 void Player::RegenerateHealth()
@@ -2610,10 +2611,8 @@ void Player::InitStatsForLevel(bool reapplyMods)
     SetFloatValue(PLAYER_RANGED_CRIT_PERCENTAGE, 0.0f);
 
     // Init spell schools (will be recalculated in UpdateAllStats() at loading and in _ApplyAllStatBonuses() at reset
-    for (uint8 i = 0; i < MAX_SPELL_SCHOOL; ++i)
-	{
-		m_SpellCritPercentage[i] = 0.0f;
-	}
+	for (uint8 i = 0; i < MAX_SPELL_SCHOOL; ++i)
+	SetFloatValue(PLAYER_SPELL_CRIT_PERCENTAGE1 + i, 0.0f);
 
     SetFloatValue(PLAYER_PARRY_PERCENTAGE, 0.0f);
     SetFloatValue(PLAYER_BLOCK_PERCENTAGE, 0.0f);

@@ -6,7 +6,6 @@
 
 using namespace ai;
 
-using namespace ai;
 
 bool UseItemAction::Execute(Event event)
 {
