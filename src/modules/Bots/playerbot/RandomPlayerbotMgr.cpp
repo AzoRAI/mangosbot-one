@@ -400,6 +400,8 @@ void RandomPlayerbotMgr::PrepareTeleportCache()
 void RandomPlayerbotMgr::RandomTeleportForLevel(Player* bot)
 {
     sLog.outDetail("Preparing location to random teleporting bot %s for level %u", bot->GetName(), bot->getLevel());
+	sLog.outDetail("Random teleporting is currently disabled... Not teleporting bot.");
+	return;
 
     if (locsPerLevelCache[bot->getLevel()].empty()) {
         QueryResult* results = WorldDatabase.PQuery("select map, position_x, position_y, position_z "
